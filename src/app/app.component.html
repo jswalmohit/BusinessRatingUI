@@ -1,0 +1,9 @@
+<div class="header">
+  <div class="logo-container">
+    <img src="assets/logo1.png" alt="App Logo" class="app-logo" />
+    <a routerLink="/login" *ngIf="isLoggedIn() && !isLoginPage()" (click)="logout()" style="float: right;" class="menulink">Logout</a>
+  </div>  
+  <a routerLink="/login" style="float: right;" class="menulink"></a>
+</div>
+
+<router-outlet></router-outlet>
