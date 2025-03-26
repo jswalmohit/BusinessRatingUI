@@ -1,9 +1,40 @@
 <div class="header">
   <div class="logo-container">
     <img src="assets/logo1.png" alt="App Logo" class="app-logo" />
-    <a routerLink="/login" *ngIf="isLoggedIn() && !isLoginPage()" (click)="logout()" style="float: right;" class="menulink">Logout</a>
-  </div>  
-  <a routerLink="/login" style="float: right;" class="menulink"></a>
+     <!-- User Profile Dropdown -->
+     <div class="user-profile-container" *ngIf="isLoggedIn() && !isLoginPage()">
+      <div class="user-icon" (click)="toggleDropdown()">
+        <img style="width: 25px;height: 25px; margin-top: 8px;" src="assets/user.png" alt="User Profile" class="profile-icon" />
+      </div>
+
+      <div class="dropdown-menu" *ngIf="dropdownOpen" style="text-align:center">
+
+        
+       <div >
+          <span *ngIf="roleID=='1'"><b>Super Admin</b></span> 
+          <span *ngIf="roleID=='2'"><b>Sub Admin</b></span>
+          <span *ngIf="roleID=='3'"><b>Business</b></span>
+          <span *ngIf="roleID=='4'"><b>Customer</b></span>
+          <p>{{emailID}}</p>
+        </div>
+        <div class="dropdown-divider"></div>
+
+          <a (click)="ProfileInfo()" class="dropdown-item">
+          Profile
+           <i class="bi bi-pencil" style="padding-left:10px"></i>
+          </a>
+          <div class="dropdown-divider"></div>
+       <a (click)="ProfileChangePassword()" class="dropdown-item">Change Password</a>
+                    <div class="dropdown-divider"></div>
+
+        <a (click)="logout()" class="dropdown-item">Logout</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <router-outlet></router-outlet>
+<div class="footer">
+ <div class="footer-style">© 2025 . All rights reserved.
+  </div>
+</div>

@@ -13,19 +13,41 @@ import { CommonModule } from '@angular/common';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
+  roleID: any;
+  emailID :any;
   title = 'business';
+  dropdownOpen = false;
   constructor(private router: Router, private authService: AuthService) {}
 
   isLoginPage(): boolean {
     return this.router.url === '/login';
+    this.dropdownOpen = false;
   }
 
   isLoggedIn(): boolean {
     return this.authService.isAuthenticated();
+    this.dropdownOpen = false;
   }
 
   logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('roleId');
+    localStorage.removeItem('email');
     this.authService.logout();
+    this.dropdownOpen = false;
     this.router.navigate(['/login']);
+  }
+  toggleDropdown() {
+    this.dropdownOpen = !this.dropdownOpen;
+    this.roleID = localStorage.getItem('roleId');
+    this.emailID=localStorage.getItem('email');
+  }
+  ProfileInfo(){
+    this.router.navigateByUrl("/edit-user");
+    this.dropdownOpen = false;
+  }
+  ProfileChangePassword(){
+    debugger;
+    this.router.navigateByUrl("/Change-password");
   }
 }

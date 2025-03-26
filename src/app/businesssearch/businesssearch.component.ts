@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit ,EventEmitter,Input,Output} from '@angular/core';
+import { Component, OnInit ,EventEmitter,Input,Output, Renderer2} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BusinessService } from '../service/business.service';
@@ -7,6 +7,8 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { AuthService } from '../service/auth.service';
+import { HttpClientModule } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 export interface Business {
   name: string;
   description: string;
@@ -16,7 +18,7 @@ export interface Business {
 @Component({
   selector: 'app-businesssearch',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, MatTabsModule, GoogleMapsModule, FormsModule],
+  imports: [ReactiveFormsModule, CommonModule, MatTabsModule, GoogleMapsModule, FormsModule, HttpClientModule],
   providers: [BusinessService],
   templateUrl: './businesssearch.component.html',
   styleUrl: './businesssearch.component.css'
@@ -46,6 +48,7 @@ export class BusinesssearchComponent implements OnInit {
   isTableVisible: boolean = false; // Table visibility flag
 
   imageBaseUrl = 'https://business-11.onrender.com/';
+  //imageBaseUrl = 'https://localhost:7000/uploads/';
 
   latitudeDifference: number | null = null;
   longitudeDifference: number | null = null;
@@ -74,13 +77,16 @@ export class BusinesssearchComponent implements OnInit {
   totalPages: number = 1;
   isPaginationVisible: boolean = false;
   roleID: string | null = null;
-  constructor(private fb: FormBuilder, private businessService: BusinessService, private router: Router, private authservice: AuthService) { }
+  isModalOpen = false;
+  modalImageUrl = '';
+  constructor(private fb: FormBuilder, private businessService: BusinessService, private router: Router, private authservice: AuthService, private renderer: Renderer2) { }
 
   ngOnInit(): void {
  
     this.searchForm = this.fb.group({
       searchQuery: ['', Validators.required],
       category: ['', Validators.required],
+      CategoryID: [0],  
       subcategory: ['', Validators.required],
       location: new FormControl('', [Validators.required]),
       Latitude: [8.3],
@@ -97,6 +103,30 @@ export class BusinesssearchComponent implements OnInit {
     this.roleID = this.authservice.getRoleIdFromToken();
     console.log("token", this.roleID)
 
+  }
+
+  openModal(imageUrl: string) {
+    let filePath = this.selectedBusiness.visitingCard;
+    if(filePath == null)
+      {
+        this.isModalOpen = false;
+        alert('Image not found.');
+      }
+    let fileName = filePath.replace("uploads\\", "");
+    if(fileName != null){
+      this.modalImageUrl = imageUrl;
+      this.isModalOpen = true; } else{
+        alert('Image not found.');
+      }   
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+  }
+
+  openPopup(business: any) {
+    this.selectedBusiness = business;
+    this.renderer.addClass(document.body, 'no-scroll'); // Lock scrolling
   }
 
   updatePagination(): void {
@@ -302,7 +332,6 @@ export class BusinesssearchComponent implements OnInit {
     })
   }
   updateDistance(){
-    
     let customerLatitude = localStorage.getItem('customerLatitude')
     let customerLongitude = localStorage.getItem('customerLongitude')
     // Array to hold all distance fetch Promises
@@ -313,6 +342,11 @@ export class BusinesssearchComponent implements OnInit {
             let distance = response.rows[0].elements[0].distance.text;
             item.distancekm = parseFloat(distance).toFixed(2);
             resolve(item);  // Resolve the Promise when distance is assigned
+          },
+          (error: any) => {
+            if(error.error.message == 'Plan not found'){
+              console.log('change distance api key');
+            }
           });
       });
     });
@@ -373,15 +407,17 @@ export class BusinesssearchComponent implements OnInit {
   }
 
   // Open popup with selected business details
-  openPopup(business: any): void {
-    this.selectedBusiness = business;
-  }
+  // openPopup(business: any): void {
+  //   this.selectedBusiness = business;
+  // }
 
   // Close the popup
   closePopup(): void {
     this.selectedBusiness = null;
     this.rating=0;
     this.ratingComment = '';
+    this.selectedBusiness = null;
+    this.renderer.removeClass(document.body, 'no-scroll'); // Enable scrolling
   }
   
   getRating(buisnessId:any){
