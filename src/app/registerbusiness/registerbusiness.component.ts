@@ -5,11 +5,12 @@ import { CommonModule } from '@angular/common';
 import { GoogleMapsModule } from "@angular/google-maps";
 import Swal from 'sweetalert2';
 import { Router, RouterLink } from '@angular/router'; 
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-registerbusiness',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, GoogleMapsModule, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, GoogleMapsModule, RouterLink,HttpClientModule],
   providers: [BusinessService],
   templateUrl: './registerbusiness.component.html',
   styleUrl: './registerbusiness.component.css'

@@ -5,11 +5,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../service/admin.service';
 import { ChangePasswordRequest } from '../models/ChangePasswordRequest';
 import { AuthService } from '../service/auth.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-changepassword',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, HttpClientModule],
   providers: [AdminService],
   templateUrl: './changepassword.component.html',
   styleUrl: './changepassword.component.css'

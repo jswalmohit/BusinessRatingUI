@@ -5,11 +5,12 @@ import { GoogleMapsModule } from "@angular/google-maps";
 import { BusinessService } from '../service/business.service';
 import { Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-customerregistration',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, GoogleMapsModule, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, GoogleMapsModule, RouterLink, HttpClientModule],
   providers: [BusinessService],
   templateUrl: './customerregistration.component.html',
   styleUrl: './customerregistration.component.css'
