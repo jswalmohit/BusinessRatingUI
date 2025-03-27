@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-edit-user',
   standalone: true,
-  imports: [ReactiveFormsModule,RouterOutlet, RouterLink, HttpClientModule, CommonModule,GoogleMapsModule],
+  imports: [ReactiveFormsModule, HttpClientModule, CommonModule,GoogleMapsModule],
   providers:[BusinessService],
   templateUrl: './edit-user.component.html',
   styleUrl: './edit-user.component.css'
