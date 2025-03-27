@@ -23,7 +23,6 @@ export class RegisterbusinessComponent implements OnInit {
   emailExists: boolean = false;
   message = '';
   private messageService = inject(BusinessService);
-
   center: google.maps.LatLngLiteral = { lat: 0, lng: 0 }; // Default to San Francisco
   zoom = 10;
   marker: google.maps.LatLngLiteral | null = null;
@@ -36,11 +35,9 @@ export class RegisterbusinessComponent implements OnInit {
       EmailId: ['', [Validators.required, Validators.email]],
       Password: ['', [Validators.required, Validators.minLength(6)]],
       Description: ['', [Validators.required, Validators.maxLength(500)]],
-      // Location: ['',[Validators.required]],
       location: new FormControl('', [Validators.required]),
       Latitude: [8.3],
       Longitude: [9.3],
-
       CategoryID: ['', [Validators.required]],
       BusinessID: [0, [Validators.required]],
       SubCategoryID: ['', [Validators.required]],
@@ -52,30 +49,13 @@ export class RegisterbusinessComponent implements OnInit {
     this.getCurrentLocation();
     this.getCategories();
   }
-  
-  checkEmail() {
-    const email = this.registerForm.get('EmailId')?.value;
-    if (email) {
-      this.businessService.checkEmailExistsBusiness(email).subscribe({
-        next: (exists) => {          
-          this.emailExists = exists;
-        },
-        error: () => {          
-          this.emailExists = false;
-        }
-      });
-    }
-  }
-
   // Getter for Email Field
   get emailID() {
     return this.registerForm.get('EmailId');
   }
-
   get FormVal() {
     return this.registerForm.value
   }
-
   getCurrentLocation(): void {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -95,7 +75,42 @@ export class RegisterbusinessComponent implements OnInit {
       alert('Geolocation is not supported by your browser.');
     }
   }
-  
+  getCategories(): void {
+    this.businessService.getCategories().subscribe((data) => {
+      this.categories = data;
+      if (!this.FormVal?.CategoryID) {
+        this.registerForm.controls['CategoryID'].setValue(data[0]?.categoryID)
+        this.getSubCategories();
+      }
+    });
+  }
+  getLocationName(lat: number, lng: number): void {
+    const geocoder = new google.maps.Geocoder();
+    const latlng = { lat, lng };
+    geocoder.geocode({ location: latlng }, (results, status) => {
+      if (status === 'OK' && results && results[0]) {
+        const locationName = results[0].formatted_address;
+        this.updateLocationFields(locationName, lat, lng);
+      } else {
+        console.error('Error fetching location name:', status);
+      }
+    });
+  }
+ 
+  getSubCategories() {
+    this.businessService.getSubCategories(this.FormVal?.CategoryID).subscribe((result: any) => {
+      this.subCategories = result;
+      if (!this.FormVal?.SubCategoryID) {
+        // this.registerForm.controls['SubCategoryID'].setValue(result[0]?.subCategoryID)
+      }
+      console.log(this.subCategories);
+    })
+  }  
+  updateLocationFields(location: string, lat: number, lng: number): void {
+    this.registerForm.controls['location'].setValue(location);
+    this.registerForm.controls['Latitude'].setValue(lat);
+    this.registerForm.controls['Longitude'].setValue(lng);
+  }
   onMapClick(event: google.maps.MapMouseEvent) {
     if (event.latLng) {
       const lat = event.latLng.lat();
@@ -104,7 +119,6 @@ export class RegisterbusinessComponent implements OnInit {
       this.getLocationName(lat, lng); // Fetch and set the location name
     }
   }
-  
   onLocationInput(): void {
     const location = this.registerForm.controls['location'].value;
     if (location) {
@@ -121,46 +135,6 @@ export class RegisterbusinessComponent implements OnInit {
         }
       });
     }
-  }
-  
-  getLocationName(lat: number, lng: number): void {
-    const geocoder = new google.maps.Geocoder();
-    const latlng = { lat, lng };
-    geocoder.geocode({ location: latlng }, (results, status) => {
-      if (status === 'OK' && results && results[0]) {
-        const locationName = results[0].formatted_address;
-        this.updateLocationFields(locationName, lat, lng);
-      } else {
-        console.error('Error fetching location name:', status);
-      }
-    });
-  }
-  
-  updateLocationFields(location: string, lat: number, lng: number): void {
-    this.registerForm.controls['location'].setValue(location);
-    this.registerForm.controls['Latitude'].setValue(lat);
-    this.registerForm.controls['Longitude'].setValue(lng);
-  }
-  
-
-  getCategories(): void {
-    this.businessService.getCategories().subscribe((data) => {
-      this.categories = data;
-      if (!this.FormVal?.CategoryID) {
-        this.registerForm.controls['CategoryID'].setValue(data[0]?.categoryID)
-        this.getSubCategories();
-      }
-    });
-  }
-
-  getSubCategories() {
-    this.businessService.getSubCategories(this.FormVal?.CategoryID).subscribe((result: any) => {
-      this.subCategories = result;
-      if (!this.FormVal?.SubCategoryID) {
-        // this.registerForm.controls['SubCategoryID'].setValue(result[0]?.subCategoryID)
-      }
-      console.log(this.subCategories);
-    })
   }
 
   onCategoryChange(eve: any): void {
@@ -192,6 +166,19 @@ export class RegisterbusinessComponent implements OnInit {
         this.imagePreview = reader.result as string;
       };
       reader.readAsDataURL(file);
+    }
+  }
+  checkEmail() {
+    const email = this.registerForm.get('EmailId')?.value;
+    if (email) {
+      this.businessService.checkEmailExistsBusiness(email).subscribe({
+        next: (exists) => {          
+          this.emailExists = exists;
+        },
+        error: () => {          
+          this.emailExists = false;
+        }
+      });
     }
   }
 
