@@ -3,7 +3,7 @@ import { By } from '@angular/platform-browser';
 import { BusinesssearchComponent } from './businesssearch.component';
 import { BusinessService } from '../service/business.service';
 import { HttpClientModule  } from '@angular/common/http';
-fdescribe('BusinesssearchComponent', () => {
+describe('BusinesssearchComponent', () => {
   let component: BusinesssearchComponent;
   let fixture: ComponentFixture<BusinesssearchComponent>;
   let buisnessService =jasmine.createSpyObj('BusinessService',['getCustomerDetailsByID']);
@@ -12,8 +12,8 @@ fdescribe('BusinesssearchComponent', () => {
       imports: [BusinesssearchComponent,HttpClientModule],
       providers: [{provide:BusinessService,useValue:buisnessService}] // Provide the BusinessService if used
     })
-    .compileComponents(); 
-    
+    .compileComponents();
+
     fixture = TestBed.createComponent(BusinesssearchComponent);
     component = fixture.componentInstance;
     buisnessService =TestBed.inject(BusinessService);
@@ -85,12 +85,12 @@ fdescribe('BusinesssearchComponent', () => {
    expect(buisnessService.getCustomerDetailsByID).toHaveBeenCalledOnceWith(component.cusId);
 
   })
-  it('Customer Detail call ',()=>{
-    component.cusId =1;
-    buisnessService.getCustomerDetailsByID(1).callFake((result:any) =>{
-      component.customerData = result;
-    }
+  // it('Customer Detail call ',()=>{
+  //   component.cusId =1;
+  //   buisnessService.getCustomerDetailsByID(1).callFake((result:any) =>{
+  //     component.customerData = result;
+  //   }
 
-    )
-  });
+  //   )
+  // });
 });

@@ -5,23 +5,17 @@ import { jwtDecode } from 'jwt-decode';
   providedIn: 'root'
 })
 export class AuthService {
-
+  private readonly userToken = localStorage.getItem('token'); 
   isAuthenticated(): boolean {
     return !!localStorage.getItem('token'); // Check if the user is logged in
   }
-
   logout() {
-    localStorage.removeItem('token');
+    localStorage.clear(); // Clear the token from localStorage
   }
-  getToken(): string | null {
-    return localStorage.getItem('token'); // Assuming token is stored in localStorage
-  }
-
   getEmailIDFromToken(): string | null {
-    const token = this.getToken();
-    if (token) {
+    if (this.userToken) {
       try {
-        const decodedToken: any = jwtDecode(token);
+        const decodedToken: any = jwtDecode(this.userToken);
         return decodedToken.EmailId || null; // Ensure the token contains an "email" claim
       } catch (error) {
         console.error('Error decoding token:', error);
@@ -32,10 +26,9 @@ export class AuthService {
   }
   // Decode token and get email
   getEmailFromToken(): string | null {
-    const token = this.getToken();
-    if (token) {
+    if (this.userToken) {
       try {
-        const decodedToken: any = jwtDecode(token);
+        const decodedToken: any = jwtDecode(this.userToken);
         return decodedToken.Cus_Id || null; // Ensure the token contains an "email" claim
       } catch (error) {
         console.error('Error decoding token:', error);
@@ -46,10 +39,9 @@ export class AuthService {
   }
 
   getRoleIdFromToken(): string | null {
-    const token = this.getToken();
-    if (token) {
+    if (this.userToken) {
       try {
-        const decodedToken: any = jwtDecode(token);
+        const decodedToken: any = jwtDecode(this.userToken);
         return decodedToken.RoleID || null; // Ensure the token contains an "email" claim
       } catch (error) {
         console.error('Error decoding token:', error);
