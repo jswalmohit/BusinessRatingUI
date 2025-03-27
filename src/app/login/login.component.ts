@@ -88,7 +88,7 @@ export class LoginComponent {
             {
               // Navigate to the change password page             
               this.router.navigateByUrl('/Change-password')
-=            }
+            }
             if(this.responsedata.roleId == 2 && this.responsedata.isPasswordChanged == true) 
               {
                 // Navigate to the business search page
