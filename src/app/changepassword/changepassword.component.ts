@@ -32,7 +32,6 @@ export class ChangepasswordComponent {
   }
   ngOnInit(): void {
     this.token = this.authService.getToken();
-    console.log("token", this.token)
   }
 
   // Custom validator to check if newPassword and confirmPassword match

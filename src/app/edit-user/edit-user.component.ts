@@ -6,6 +6,7 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BusinessService } from '../service/business.service';
 import { GoogleMapsModule } from '@angular/google-maps';
 import Swal from 'sweetalert2';
+import { AuthService } from '../service/auth.service';
 
 @Component({
   selector: 'app-edit-user',
@@ -33,13 +34,14 @@ export class EditUserComponent {
   imagePreview: string | undefined;
   fileUpload: any;
   emailExists: boolean = false;
-  constructor(private fb: FormBuilder, private businessService: BusinessService,private router: Router) {
+  constructor(private fb: FormBuilder, private businessService: BusinessService, private authService : AuthService, private router: Router) {
    
   }
 
   ngOnInit() {
     // this.getCurrentLocation();
-    this.roleID = Number(localStorage.getItem('roleId'));
+    // this.roleID = Number(localStorage.getItem('roleId'));
+    this.roleID = Number(this.authService.getRoleIdFromToken());
     this.domainID = Number(localStorage.getItem('domainID'));
   
     if (this.roleID === 3) {

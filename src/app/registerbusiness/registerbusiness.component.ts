@@ -103,7 +103,6 @@ export class RegisterbusinessComponent implements OnInit {
       if (!this.FormVal?.SubCategoryID) {
         // this.registerForm.controls['SubCategoryID'].setValue(result[0]?.subCategoryID)
       }
-      console.log(this.subCategories);
     })
   }  
   updateLocationFields(location: string, lat: number, lng: number): void {
@@ -149,7 +148,6 @@ export class RegisterbusinessComponent implements OnInit {
 
   onFileChange(event: any) {
     this.fileUpload = event.target.files[0];
-    console.log(this.fileUpload);
 
   }
   onImageUpload(event: Event): void {

@@ -95,14 +95,10 @@ export class BusinesssearchComponent implements OnInit {
 
     this.getCategories();
     this.getCurrentLocation();
-    console.log(this.categories, "test")
     this.cusId = this.authservice.getEmailFromToken();
     this.emailId =this.authservice.getEmailIDFromToken()
-    console.log('Cusid:', this.cusId);
     this.getCustomerDetails();
     this.roleID = this.authservice.getRoleIdFromToken();
-    console.log("token", this.roleID)
-
   }
 
   openModal(imageUrl: string) {
@@ -308,7 +304,6 @@ export class BusinesssearchComponent implements OnInit {
   getBusinessDetailById(id: any, distance: number) {
     this.businessService.getBusinessDetailById(id).subscribe((result: any) => {
       this.selectedBusiness = result[0];
-      console.log(this.selectedBusiness, '-ppp');
       this.selectedBusiness.distancekm = distance;
     })
   }
@@ -345,7 +340,6 @@ export class BusinesssearchComponent implements OnInit {
           },
           (error: any) => {
             if(error.error.message == 'Plan not found'){
-              console.log('change distance api key');
             }
           });
       });
@@ -359,7 +353,6 @@ export class BusinesssearchComponent implements OnInit {
     });
 }
   replacePercentage(val: any) {
-    console.log(val);
     return val;
   }
 
@@ -380,11 +373,7 @@ export class BusinesssearchComponent implements OnInit {
 
   // Handle form submission
   onSubmit(): void {
-    if (this.searchForm.valid) {
-      console.log('Form Submitted:', this.searchForm.value);
-    } else {
-      console.error('Form is invalid');
-    }
+
   }
   sortDistance(value:boolean):any{
    if(value && this.businessList.length>0){

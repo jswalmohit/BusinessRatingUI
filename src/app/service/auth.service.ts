@@ -50,7 +50,7 @@ export class AuthService {
     if (token) {
       try {
         const decodedToken: any = jwtDecode(token);
-        return decodedToken.RoleId || null; // Ensure the token contains an "email" claim
+        return decodedToken.RoleID || null; // Ensure the token contains an "email" claim
       } catch (error) {
         console.error('Error decoding token:', error);
         return null;

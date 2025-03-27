@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { BrowserModule } from '@angular/platform-browser';
 import { LoginService } from '../service/login.service';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../service/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +24,7 @@ export class LoginComponent {
   isButtonDisabled: boolean = false;
   showPassword: boolean = false;
 
-  constructor(private fb: FormBuilder, private service: LoginService, private router: Router) {
+  constructor(private fb: FormBuilder, private loginService: LoginService,private authService:AuthService, private router: Router) {
     localStorage.clear();
     // Initialize the form
     this.loginForm = this.fb.group({
@@ -59,15 +60,16 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.isButtonDisabled = true;
       const loginData = this.loginForm.value;
-      this.service.onSubmit(loginData).subscribe({
-        next: (result) => {          
+      this.loginService.onSubmit(loginData).subscribe({
+        next: (result) => {  
           this.responsedata = result;
           if (this.responsedata != null && this.responsedata.token) {
             // Store the token in local storage
             localStorage.setItem('token', this.responsedata.token);
             localStorage.setItem("roleId",this.responsedata.roleId);
-            const email = this.extractEmailFromToken(this.responsedata.token);
-          if (email) {
+            //const email = this.extractEmailFromToken(this.responsedata.token);
+            const email = this.authService.getEmailIDFromToken();
+            if (email) {
             localStorage.setItem("email", email);
           }
             const domainID = this.extractDomainIDFromToken(this.responsedata.token);
@@ -81,14 +83,12 @@ export class LoginComponent {
             if (this.responsedata.roleId == 1) {
               // Navigate to the add sub admin page
               this.router.navigateByUrl('/Subadmin');
-              console.log("return token", this.responsedata)
             }
             if(this.responsedata.roleId == 2 && this.responsedata.isPasswordChanged == false) 
             {
               // Navigate to the change password page             
               this.router.navigateByUrl('/Change-password')
-              console.log("return token", this.responsedata)
-            }
+=            }
             if(this.responsedata.roleId == 2 && this.responsedata.isPasswordChanged == true) 
               {
                 // Navigate to the business search page

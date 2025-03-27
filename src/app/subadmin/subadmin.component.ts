@@ -32,7 +32,6 @@ export class SubadminComponent {
   }
 
   ngOnInit(): void {
-    console.log("this", this.email);
   }
 
   //Getters for form controls
