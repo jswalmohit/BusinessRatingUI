@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { BusinessService } from './business.service';
 
-fdescribe('BusinessService', () => {
+describe('BusinessService', () => {
   let service: BusinessService;
   let httpMock: HttpTestingController;
   let apiUrl: string;

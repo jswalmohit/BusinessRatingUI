@@ -10,7 +10,10 @@ export class AuthService {
     return !!localStorage.getItem('token'); // Check if the user is logged in
   }
   logout() {
-    localStorage.clear(); // Clear the token from localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('roleId');
+    localStorage.removeItem('email');
+    //localStorage.clear(); // Clear the token from localStorage
   }
   getEmailIDFromToken(): string | null {
     if (this.userToken) {

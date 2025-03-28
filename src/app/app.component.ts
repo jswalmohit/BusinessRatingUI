@@ -30,9 +30,6 @@ export class AppComponent {
   }
 
   logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('roleId');
-    localStorage.removeItem('email');
     this.authService.logout();
     this.dropdownOpen = false;
     this.router.navigate(['/login']);
