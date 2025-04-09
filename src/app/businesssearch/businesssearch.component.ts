@@ -7,7 +7,6 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { AuthService } from '../service/auth.service';
-import { HttpClientModule } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 export interface Business {
   name: string;
@@ -18,7 +17,7 @@ export interface Business {
 @Component({
   selector: 'app-businesssearch',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, MatTabsModule, GoogleMapsModule, FormsModule, HttpClientModule],
+  imports: [ReactiveFormsModule, CommonModule, MatTabsModule, GoogleMapsModule, FormsModule],
   providers: [BusinessService],
   templateUrl: './businesssearch.component.html',
   styleUrl: './businesssearch.component.css'
@@ -95,8 +94,8 @@ export class BusinesssearchComponent implements OnInit {
 
     this.getCategories();
     this.getCurrentLocation();
-    this.cusId = this.authservice.getEmailFromToken();
-    this.emailId =this.authservice.getEmailIDFromToken()
+    this.cusId = this.authservice.getcustomerIDFromToken  ();
+    this.emailId =this.authservice.getUserEmail()
     this.getCustomerDetails();
     this.roleID = this.authservice.getRoleIdFromToken();
   }
@@ -304,7 +303,7 @@ export class BusinesssearchComponent implements OnInit {
   getBusinessDetailById(id: any, distance: number) {
     this.businessService.getBusinessDetailById(id).subscribe((result: any) => {
       this.selectedBusiness = result[0];
-      this.selectedBusiness.distancekm = distance;
+      this.selectedBusiness.distancekm = 10;
     })
   }
 
@@ -321,7 +320,7 @@ export class BusinesssearchComponent implements OnInit {
     }
     this.businessService.searchBusinesses(this.selectedCategory.categoryName, this.selectedSubCategory.subCategoryName).subscribe((result: any) => {
       this.businessList = result;
-      this.updateDistance();
+      //this.updateDistance();
       this.updatePagination();
       this.isTableVisible = true;      
     })

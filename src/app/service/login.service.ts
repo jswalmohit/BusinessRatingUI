@@ -15,18 +15,10 @@ export class LoginService {
 
   constructor(private http: HttpClient) { }
 
-  onSubmit(usercred:any)
-  {
+  getUserLoggedIn(usercred:any) : Observable<any> {
      return this.http.post(this.apiurl, usercred)
   }
-  IsLogged()
-  {
-    return localStorage.getItem("token")!=null;
-  }
-  GetToken()
-  {
-    return localStorage.getItem("token") || '';
-  }
+  
   forgotPassword(request: ForgotPasswordRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}/forgot-password`, request);
   }

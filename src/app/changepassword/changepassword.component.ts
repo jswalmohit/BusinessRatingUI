@@ -31,7 +31,6 @@ export class ChangepasswordComponent {
     },{ validator: this.checkPasswords });
   }
   ngOnInit(): void {
-    // this.token = this.authService.getToken();
     this.token = localStorage.getItem('token');
   }
 

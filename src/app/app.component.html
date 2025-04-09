@@ -8,13 +8,8 @@
       </div>
 
       <div class="dropdown-menu" *ngIf="dropdownOpen" style="text-align:center">
-
-        
        <div >
-          <span *ngIf="roleID=='1'"><b>Super Admin</b></span> 
-          <span *ngIf="roleID=='2'"><b>Sub Admin</b></span>
-          <span *ngIf="roleID=='3'"><b>Business</b></span>
-          <span *ngIf="roleID=='4'"><b>Customer</b></span>
+          <span>{{roleID | userRole}}</span>
           <p>{{emailID}}</p>
         </div>
         <div class="dropdown-divider"></div>
@@ -33,8 +28,6 @@
   </div>
 </div>
 
+<app-footer></app-footer>
+
 <router-outlet></router-outlet>
-<div class="footer">
- <div class="footer-style">© 2025 . All rights reserved.
-  </div>
-</div>

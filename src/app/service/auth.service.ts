@@ -15,43 +15,27 @@ export class AuthService {
     localStorage.removeItem('email');
     //localStorage.clear(); // Clear the token from localStorage
   }
-  getEmailIDFromToken(): string | null {
+  setUserDetail(){
     if (this.userToken) {
       try {
         const decodedToken: any = jwtDecode(this.userToken);
-        return decodedToken.EmailId || null; // Ensure the token contains an "email" claim
+        localStorage.setItem('userEmail', decodedToken.EmailId || null); // Ensure the token contains an "email" claim
+        localStorage.setItem('userRoleId', decodedToken.RoleID || null); // Ensure the token contains an "RoleID" claim
+        localStorage.setItem('customerId', decodedToken.Cus_Id || null); // Ensure the token contains an "Cus_Id" claim
       } catch (error) {
-        console.error('Error decoding token:', error);
-        return null;
-      }
+        console.error('Error decoding token:', error);      }
     }
-    return null;
+  }
+  getUserEmail(): string | null {
+    return localStorage.getItem('email'); // Get the email from localStorage
   }
   // Decode token and get email
-  getEmailFromToken(): string | null {
-    if (this.userToken) {
-      try {
-        const decodedToken: any = jwtDecode(this.userToken);
-        return decodedToken.Cus_Id || null; // Ensure the token contains an "email" claim
-      } catch (error) {
-        console.error('Error decoding token:', error);
-        return null;
-      }
-    }
-    return null;
+  getcustomerIDFromToken(): string | null {
+    return localStorage.getItem('customerId'); // Get the customerId from localStorage
   }
 
   getRoleIdFromToken(): string | null {
-    if (this.userToken) {
-      try {
-        const decodedToken: any = jwtDecode(this.userToken);
-        return decodedToken.RoleID || null; // Ensure the token contains an "email" claim
-      } catch (error) {
-        console.error('Error decoding token:', error);
-        return null;
-      }
-    }
-    return null;
+    return localStorage.getItem('roleId'); // Get the roleId from localStorage
   }
   
 }

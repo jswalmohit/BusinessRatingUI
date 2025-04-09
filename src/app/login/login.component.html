@@ -51,7 +51,7 @@
 
     <!-- Submit Button -->
     <div class="button-container">
-      <button type="submit" [disabled]="isButtonDisabled" class="btn-submit">
+      <button type="submit" [disabled]="isLoginButtonDisabled || !loginForm.valid" class="btn-submit">
         Login
       </button>
     </div>
