@@ -59,7 +59,7 @@ export class BusinesssearchComponent implements OnInit {
   // Variables to store selected category and subcategory objects
   selectedCategory: any = null;
   selectedSubCategory: any = null;
-  selectedBusiness: any = null; // Initially null
+  selectedBusiness: any ; // Initially null
   subCategories: any;
   businessDetail: any;
   newLocation: any;
@@ -269,9 +269,11 @@ export class BusinesssearchComponent implements OnInit {
   }
 
   updateLocationFields(location: string, lat: number, lng: number): void {
-    this.selectedBusiness.location = location
+    if (this.selectedBusiness) {
+      this.selectedBusiness.location = location;
     this.selectedBusiness.longitude = lat
     this.selectedBusiness.latitude = lng
+    }
   }
 
   // Method to generate the full image URL
@@ -302,7 +304,7 @@ export class BusinesssearchComponent implements OnInit {
 
   getBusinessDetailById(id: any, distance: number) {
     this.businessService.getBusinessDetailById(id).subscribe((result: any) => {
-      this.selectedBusiness = result[0];
+      this.selectedBusiness = result;
       this.selectedBusiness.distancekm = 10;
     })
   }

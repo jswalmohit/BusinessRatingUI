@@ -27,7 +27,7 @@ export class AuthService {
     }
   }
   getUserEmail(): string | null {
-    return localStorage.getItem('email'); // Get the email from localStorage
+    return localStorage.getItem('userEmail'); // Get the email from localStorage
   }
   // Decode token and get email
   getcustomerIDFromToken(): string | null {
@@ -35,7 +35,7 @@ export class AuthService {
   }
 
   getRoleIdFromToken(): string | null {
-    return localStorage.getItem('roleId'); // Get the roleId from localStorage
+    return localStorage.getItem('userRoleId'); // Get the roleId from localStorage
   }
   
 }

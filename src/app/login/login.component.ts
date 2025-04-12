@@ -27,7 +27,7 @@ export class LoginComponent {
     localStorage.clear();
     // Initialize the form
     this.loginForm = this.fb.group({
-      username: ['c@c', Validators.required],
+      username: ['c3@c', Validators.required],
       password: ['123456', [Validators.required, Validators.minLength(6)]],
     });
   }
