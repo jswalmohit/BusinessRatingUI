@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from './../../environments/environment';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -68,5 +67,18 @@ export class BusinessService {
     
     const url = `https://maps.gomaps.pro/maps/api/distancematrix/json?units=metric&origins=${originLatitude},${originLongitude}&destinations=${destLatitude},${destLongitude}&key=${environment.API_KEY}`;
     return this.http.get<any>(url);
+  }
+
+  updateBusinessDetails(formData: FormData): Observable<any> {
+    return this.http.put(`${this.apiUrl}/updatebusinessdetails`, formData);
+  }
+
+  updateCustomerDetails(formData: FormData): Observable<any>{
+    return this.http.put(`${this.cus_ApiUrl}/updatecustomerdetails`, formData);
+  }
+    //todo--to remove
+
+  getAllUsers(): Observable<any[]> {
+    return this.http.get<any[]>('assets/users.json');
   }
 }

@@ -5,11 +5,12 @@ import { GoogleMapsModule } from "@angular/google-maps";
 import { BusinessService } from '../service/business.service';
 import { Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-customerregistration',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, GoogleMapsModule, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, GoogleMapsModule, RouterLink, HttpClientModule],
   providers: [BusinessService],
   templateUrl: './customerregistration.component.html',
   styleUrl: './customerregistration.component.css'
@@ -41,7 +42,6 @@ export class CustomerregistrationComponent implements OnInit {
 
   ngOnInit(): void {
     this.getCurrentLocation();
-
   }
 
   checkEmail() {
@@ -71,8 +71,6 @@ export class CustomerregistrationComponent implements OnInit {
   get location() {
     return this.cusRegisterForm.get('Cus_Location');
   }
-
-
   getCurrentLocation(): void {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -150,8 +148,6 @@ export class CustomerregistrationComponent implements OnInit {
       this.showAlert("Form is invalid. Please check the inputs.", "error");
       return;
     }
-
-    console.log('Form Submitted', this.cusRegisterForm.value);
     this.businessService.registerCustomer(this.cusRegisterForm.value).subscribe({
       next: (response) => {
         if (response) {
@@ -214,6 +210,5 @@ export class CustomerregistrationComponent implements OnInit {
     // Replace with a UI library like SweetAlert2 or Material Dialog for better user experience
     alert(message);
     // Optional: Log the alert for debugging purposes
-    console.log(`[${type.toUpperCase()}] ${message}`);
   }
 }

@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import {  HttpClientModule } from '@angular/common/http';
+import { Component, DoCheck } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
 import { LoginService } from '../service/login.service';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../service/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, HttpClientModule],
   providers: [LoginService],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -20,15 +20,15 @@ export class LoginComponent {
   roleId: any;
   isPasswordChanged: any;
   errorMessage: string | null = null;
-  isButtonDisabled: boolean = false;
+  isLoginButtonDisabled: boolean = false;
   showPassword: boolean = false;
-
-  constructor(private fb: FormBuilder, private service: LoginService, private router: Router) {
+  
+  constructor(private fb: FormBuilder, private loginService: LoginService,private authService:AuthService, private router: Router) {
     localStorage.clear();
     // Initialize the form
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      username: ['c3@c', Validators.required],
+      password: ['123456', [Validators.required, Validators.minLength(6)]],
     });
   }
 
@@ -57,31 +57,30 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      this.isButtonDisabled = true;
+      this.isLoginButtonDisabled = true;
       const loginData = this.loginForm.value;
-      this.service.onSubmit(loginData).subscribe({
-        next: (result) => {          
+      this.loginService.getUserLoggedIn(loginData).subscribe({
+        next: (result) => {  
           this.responsedata = result;
           if (this.responsedata != null && this.responsedata.token) {
             // Store the token in local storage
             localStorage.setItem('token', this.responsedata.token);
-            localStorage.setItem("roleId",this.responsedata.roleId);
-            if (this.responsedata.roleId == 3 || this.responsedata.roleId == 4) {
+            this.authService.setUserDetail();
+            let userRoleId = this.responsedata.roleId;
+            if (userRoleId == 3 || userRoleId == 4) {
               // Navigate to the business search page
               this.router.navigateByUrl('/Businesssearch');
             }
-            if (this.responsedata.roleId == 1) {
+            if (userRoleId == 1) {
               // Navigate to the add sub admin page
               this.router.navigateByUrl('/Subadmin');
-              console.log("return token", this.responsedata)
             }
-            if(this.responsedata.roleId == 2 && this.responsedata.isPasswordChanged == false) 
+            if(userRoleId == 2 && this.responsedata.isPasswordChanged == false) 
             {
               // Navigate to the change password page             
               this.router.navigateByUrl('/Change-password')
-              console.log("return token", this.responsedata)
             }
-            if(this.responsedata.roleId == 2 && this.responsedata.isPasswordChanged == true) 
+            if(userRoleId == 2 && this.responsedata.isPasswordChanged == true) 
               {
                 // Navigate to the business search page
                 this.router.navigateByUrl('/Businesssearch');                
@@ -89,11 +88,11 @@ export class LoginComponent {
           } else {
             // If token is not available, show a failed login message
             alert('Login Failed!');
-            this.isButtonDisabled = false;
+            this.isLoginButtonDisabled = false;
           }
         },
         error: (error) => {
-          this.isButtonDisabled = false;
+          this.isLoginButtonDisabled = false;
           // Handle HTTP error responses like Unauthorized (401)
           if (error.status === 401) {
             alert('Incorrect username or password. Unauthorized!');
@@ -105,7 +104,8 @@ export class LoginComponent {
       });
     } else {
       alert('Enter valid username and password!');
-      this.isButtonDisabled = false;
+      this.isLoginButtonDisabled = false;
     }
   }
+  
 }

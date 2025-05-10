@@ -5,58 +5,37 @@ import { jwtDecode } from 'jwt-decode';
   providedIn: 'root'
 })
 export class AuthService {
-
+  private readonly userToken = localStorage.getItem('token'); 
   isAuthenticated(): boolean {
     return !!localStorage.getItem('token'); // Check if the user is logged in
   }
-
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('roleId');
+    localStorage.removeItem('email');
+    //localStorage.clear(); // Clear the token from localStorage
   }
-  getToken(): string | null {
-    return localStorage.getItem('token'); // Assuming token is stored in localStorage
-  }
-
-  getEmailIDFromToken(): string | null {
-    const token = this.getToken();
-    if (token) {
+  setUserDetail(){
+    if (this.userToken) {
       try {
-        const decodedToken: any = jwtDecode(token);
-        return decodedToken.EmailId || null; // Ensure the token contains an "email" claim
+        const decodedToken: any = jwtDecode(this.userToken);
+        localStorage.setItem('userEmail', decodedToken.EmailId || null); // Ensure the token contains an "email" claim
+        localStorage.setItem('userRoleId', decodedToken.RoleID || null); // Ensure the token contains an "RoleID" claim
+        localStorage.setItem('customerId', decodedToken.Cus_Id || null); // Ensure the token contains an "Cus_Id" claim
       } catch (error) {
-        console.error('Error decoding token:', error);
-        return null;
-      }
+        console.error('Error decoding token:', error);      }
     }
-    return null;
+  }
+  getUserEmail(): string | null {
+    return localStorage.getItem('userEmail'); // Get the email from localStorage
   }
   // Decode token and get email
-  getEmailFromToken(): string | null {
-    const token = this.getToken();
-    if (token) {
-      try {
-        const decodedToken: any = jwtDecode(token);
-        return decodedToken.Cus_Id || null; // Ensure the token contains an "email" claim
-      } catch (error) {
-        console.error('Error decoding token:', error);
-        return null;
-      }
-    }
-    return null;
+  getcustomerIDFromToken(): string | null {
+    return localStorage.getItem('customerId'); // Get the customerId from localStorage
   }
 
   getRoleIdFromToken(): string | null {
-    const token = this.getToken();
-    if (token) {
-      try {
-        const decodedToken: any = jwtDecode(token);
-        return decodedToken.RoleId || null; // Ensure the token contains an "email" claim
-      } catch (error) {
-        console.error('Error decoding token:', error);
-        return null;
-      }
-    }
-    return null;
+    return localStorage.getItem('userRoleId'); // Get the roleId from localStorage
   }
   
 }

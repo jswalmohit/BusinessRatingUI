@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit ,EventEmitter,Input,Output} from '@angular/core';
+import { Component, OnInit ,EventEmitter,Input,Output, Renderer2} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BusinessService } from '../service/business.service';
@@ -7,6 +7,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { AuthService } from '../service/auth.service';
+import { environment } from '../../environments/environment';
 export interface Business {
   name: string;
   description: string;
@@ -46,6 +47,7 @@ export class BusinesssearchComponent implements OnInit {
   isTableVisible: boolean = false; // Table visibility flag
 
   imageBaseUrl = 'https://business-11.onrender.com/';
+  //imageBaseUrl = 'https://localhost:7000/uploads/';
 
   latitudeDifference: number | null = null;
   longitudeDifference: number | null = null;
@@ -57,7 +59,7 @@ export class BusinesssearchComponent implements OnInit {
   // Variables to store selected category and subcategory objects
   selectedCategory: any = null;
   selectedSubCategory: any = null;
-  selectedBusiness: any = null; // Initially null
+  selectedBusiness: any ; // Initially null
   subCategories: any;
   businessDetail: any;
   newLocation: any;
@@ -74,13 +76,20 @@ export class BusinesssearchComponent implements OnInit {
   totalPages: number = 1;
   isPaginationVisible: boolean = false;
   roleID: string | null = null;
-  constructor(private fb: FormBuilder, private businessService: BusinessService, private router: Router, private authservice: AuthService) { }
+  isModalOpen = false;
+  modalImageUrl = '';
+  constructor(private fb: FormBuilder, private businessService: BusinessService, private router: Router, private authservice: AuthService, private renderer: Renderer2) { }
 
   ngOnInit(): void {
- 
+
+    //todo--to remove
+    this.businessService.getAllUsers().subscribe((result: any) => {
+      console.log(result);
+    });
     this.searchForm = this.fb.group({
       searchQuery: ['', Validators.required],
       category: ['', Validators.required],
+      CategoryID: [0],  
       subcategory: ['', Validators.required],
       location: new FormControl('', [Validators.required]),
       Latitude: [8.3],
@@ -89,14 +98,34 @@ export class BusinesssearchComponent implements OnInit {
 
     this.getCategories();
     this.getCurrentLocation();
-    console.log(this.categories, "test")
-    this.cusId = this.authservice.getEmailFromToken();
-    this.emailId =this.authservice.getEmailIDFromToken()
-    console.log('Cusid:', this.cusId);
+    this.cusId = this.authservice.getcustomerIDFromToken  ();
+    this.emailId =this.authservice.getUserEmail()
     this.getCustomerDetails();
     this.roleID = this.authservice.getRoleIdFromToken();
-    console.log("token", this.roleID)
+  }
 
+  openModal(imageUrl: string) {
+    let filePath = this.selectedBusiness.visitingCard;
+    if(filePath == null)
+      {
+        this.isModalOpen = false;
+        alert('Image not found.');
+      }
+    let fileName = filePath.replace("uploads\\", "");
+    if(fileName != null){
+      this.modalImageUrl = imageUrl;
+      this.isModalOpen = true; } else{
+        alert('Image not found.');
+      }   
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+  }
+
+  openPopup(business: any) {
+    this.selectedBusiness = business;
+    this.renderer.addClass(document.body, 'no-scroll'); // Lock scrolling
   }
 
   updatePagination(): void {
@@ -244,9 +273,11 @@ export class BusinesssearchComponent implements OnInit {
   }
 
   updateLocationFields(location: string, lat: number, lng: number): void {
-    this.selectedBusiness.location = location
+    if (this.selectedBusiness) {
+      this.selectedBusiness.location = location;
     this.selectedBusiness.longitude = lat
     this.selectedBusiness.latitude = lng
+    }
   }
 
   // Method to generate the full image URL
@@ -277,9 +308,8 @@ export class BusinesssearchComponent implements OnInit {
 
   getBusinessDetailById(id: any, distance: number) {
     this.businessService.getBusinessDetailById(id).subscribe((result: any) => {
-      this.selectedBusiness = result[0];
-      console.log(this.selectedBusiness, '-ppp');
-      this.selectedBusiness.distancekm = distance;
+      this.selectedBusiness = result;
+      this.selectedBusiness.distancekm = 10;
     })
   }
 
@@ -296,13 +326,12 @@ export class BusinesssearchComponent implements OnInit {
     }
     this.businessService.searchBusinesses(this.selectedCategory.categoryName, this.selectedSubCategory.subCategoryName).subscribe((result: any) => {
       this.businessList = result;
-      this.updateDistance();
+      //this.updateDistance();
       this.updatePagination();
       this.isTableVisible = true;      
     })
   }
   updateDistance(){
-    
     let customerLatitude = localStorage.getItem('customerLatitude')
     let customerLongitude = localStorage.getItem('customerLongitude')
     // Array to hold all distance fetch Promises
@@ -313,6 +342,10 @@ export class BusinesssearchComponent implements OnInit {
             let distance = response.rows[0].elements[0].distance.text;
             item.distancekm = parseFloat(distance).toFixed(2);
             resolve(item);  // Resolve the Promise when distance is assigned
+          },
+          (error: any) => {
+            if(error.error.message == 'Plan not found'){
+            }
           });
       });
     });
@@ -325,7 +358,6 @@ export class BusinesssearchComponent implements OnInit {
     });
 }
   replacePercentage(val: any) {
-    console.log(val);
     return val;
   }
 
@@ -346,11 +378,7 @@ export class BusinesssearchComponent implements OnInit {
 
   // Handle form submission
   onSubmit(): void {
-    if (this.searchForm.valid) {
-      console.log('Form Submitted:', this.searchForm.value);
-    } else {
-      console.error('Form is invalid');
-    }
+
   }
   sortDistance(value:boolean):any{
    if(value && this.businessList.length>0){
@@ -373,15 +401,17 @@ export class BusinesssearchComponent implements OnInit {
   }
 
   // Open popup with selected business details
-  openPopup(business: any): void {
-    this.selectedBusiness = business;
-  }
+  // openPopup(business: any): void {
+  //   this.selectedBusiness = business;
+  // }
 
   // Close the popup
   closePopup(): void {
     this.selectedBusiness = null;
     this.rating=0;
     this.ratingComment = '';
+    this.selectedBusiness = null;
+    this.renderer.removeClass(document.body, 'no-scroll'); // Enable scrolling
   }
   
   getRating(buisnessId:any){

@@ -5,11 +5,12 @@ import { ForgotPasswordRequest } from '../models/ForgotPasswordRequest';
 import { CommonModule } from '@angular/common';
 import { LoginService } from '../service/login.service';
 import { Router } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,HttpClientModule],
   providers:[LoginService],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.css'

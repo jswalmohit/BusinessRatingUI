@@ -5,11 +5,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../service/admin.service';
 import { ChangePasswordRequest } from '../models/ChangePasswordRequest';
 import { AuthService } from '../service/auth.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-changepassword',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, HttpClientModule],
   providers: [AdminService],
   templateUrl: './changepassword.component.html',
   styleUrl: './changepassword.component.css'
@@ -30,8 +31,7 @@ export class ChangepasswordComponent {
     },{ validator: this.checkPasswords });
   }
   ngOnInit(): void {
-    this.token = this.authService.getToken();
-    console.log("token", this.token)
+    this.token = localStorage.getItem('token');
   }
 
   // Custom validator to check if newPassword and confirmPassword match

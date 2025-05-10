@@ -5,11 +5,12 @@ import { AuthService } from '../service/auth.service';
 import { ResetPasswordRequest } from '../models/ResetPasswordRequest';
 import { CommonModule } from '@angular/common';
 import { LoginService } from '../service/login.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, HttpClientModule],
   providers: [LoginService],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css'
