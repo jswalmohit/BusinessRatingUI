@@ -81,7 +81,11 @@ export class BusinesssearchComponent implements OnInit {
   constructor(private fb: FormBuilder, private businessService: BusinessService, private router: Router, private authservice: AuthService, private renderer: Renderer2) { }
 
   ngOnInit(): void {
- 
+
+    //todo--to remove
+    this.businessService.getAllUsers().subscribe((result: any) => {
+      console.log(result);
+    });
     this.searchForm = this.fb.group({
       searchQuery: ['', Validators.required],
       category: ['', Validators.required],

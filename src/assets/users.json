@@ -1,0 +1,17 @@
+[
+    {
+      "userName": "John Doe",
+      "userEmail": "john.doe@example.com",
+      "userRole": "1"
+    },
+    {
+      "userName": "Jane Smith",
+      "userEmail": "jane.smith@example.com",
+      "userRole": "2"
+    },
+    {
+      "userName": "Alice Johnson",
+      "userEmail": "alice.johnson@example.com",
+      "userRole": "3"
+    }
+  ]

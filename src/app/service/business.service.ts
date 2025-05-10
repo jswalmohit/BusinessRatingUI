@@ -76,5 +76,9 @@ export class BusinessService {
   updateCustomerDetails(formData: FormData): Observable<any>{
     return this.http.put(`${this.cus_ApiUrl}/updatecustomerdetails`, formData);
   }
+    //todo--to remove
 
+  getAllUsers(): Observable<any[]> {
+    return this.http.get<any[]>('assets/users.json');
+  }
 }
